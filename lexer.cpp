@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
   //std::cout << "Enter the name of the file you want to parse." << std::endl;
   //std::cin.get(filename,256);
   
-  std::ifstream fs("test1.txt");	//Open file
+  std::ifstream fs("test.txt");	//Open file
   
   //Check that the file is open
   if(!fs.is_open()) {
@@ -83,4 +83,5 @@ bool isValid(string original, vector<string>& variable, vector<string>& state) {
 		cout << "Is identifier " << endl;
 		isIdentifier(original, variable, state);
 	}
+	return true;
 }

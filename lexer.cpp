@@ -25,5 +25,6 @@ int main(int argc, char** argv) {
     }
   }
   
+  fs.close();
   return 0;
 }

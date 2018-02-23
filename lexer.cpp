@@ -8,6 +8,10 @@
 #include <vector>
 #include <cctype>
 
+/*need to update the identifier function to make make sure if statements
+can only take $ or any alphanumeric character at the end or else its not an identifier
+*/
+
 //identifier - starts with letter, can end with 
 //real - integer followed by a "." and integer
 //integer - sequence of decimal digits
@@ -17,31 +21,32 @@
 
 using namespace std;
 
+bool isIdentifier(string temp, vector<string>& variable, vector<string>& state);
+bool isReal(string temp, vector<string>& variable, vector<string>& state);
+bool isInteger(string temp, vector<string>& variable, vector<string>& state);
 bool isValid(string original, vector<string>& variable, vector<string>& state);
 void print_list(const vector<string>& variable, const vector<string>& state);
 
+/*-----------------------------------Start of main------------------------------------*/
 int main(int argc, char** argv) {
   char filename[256];
-  //std::cout << "Enter the name of the file you want to parse." << std::endl;
-  //std::cin.get(filename,256);
   
-  std::ifstream fs("test1.txt");	//Open file
-  
+  ifstream fs("test1.txt");	//Open file
+
   //Check that the file is open
   if(!fs.is_open()) {
-    std::cout << "Could not find file. Aborting." << std::endl;
+    cout << "Could not find file. Aborting." << std::endl;
     return -1;
   }
   
   vector<string> variable;
   vector<string> state;
   
+  // read until white space, save string into temp
   while(!fs.eof()) {
 	  string temp;
 	  fs >> temp;
-	  if(isValid(temp, variable, state)) {
-		  
-	  }
+	  isValid(temp, variable, state);
   }
   fs.close();
   
@@ -49,7 +54,7 @@ int main(int argc, char** argv) {
   
   return 0;
 }
-
+/*-----------------------------------End of main------------------------------------*/
 void print_list(const vector<string>& variable, const vector<string>& state) {
 	cout << " === Token === \t=== State ===\n";
 	for(int i = 0; i < variable.size(); i++) {
@@ -62,7 +67,7 @@ bool isIdentifier(string temp, vector<string>& variable, vector<string>& state) 
 		//If our string is does not contain either a digit or letter, we must be
 		// at the end of our string AND the last char is either a letter or $
 		if(!isalpha(temp[i]) && !isdigit(temp[i])) {
-			if(temp[temp.length()-1] != '$' && !isalpha(temp[temp.length()-1])) {
+			if(temp[temp.length()-1] != '$' ||  !isalpha(temp[temp.length()-1])) {
 				cout << temp << " is not a valid identifier." << endl;
 				return false;
 			}

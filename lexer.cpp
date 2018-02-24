@@ -8,10 +8,6 @@
 #include <vector>
 #include <cctype>
 
-/*need to update the identifier function to make make sure if statements
-can only take $ or any alphanumeric character at the end or else its not an identifier
-*/
-
 //identifier - starts with letter, can end with 
 //real - integer followed by a "." and integer
 //integer - sequence of decimal digits

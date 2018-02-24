@@ -1,7 +1,7 @@
 //Johnson Lien
 //CPSC323 Project 1 - Lexer
 #include <stdio.h>
-
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -56,18 +56,18 @@ int main(int argc, char** argv) {
 }
 /*-----------------------------------End of main------------------------------------*/
 void print_list(const vector<string>& variable, const vector<string>& state) {
-	cout << " === Token === \t=== State ===\n";
+	cout << setw(10);
+	cout << " === Token ===\t\t\t=== State ===\n";
 	for(int i = 0; i < variable.size(); i++) {
-	  cout << variable[i] << "\t\t" << state[i] << endl;
+	  cout << variable[i] << "\t\t\t" << state[i] << endl;
 	}
 }
 
 bool isIdentifier(string temp, vector<string>& variable, vector<string>& state) {
 	for(int i = 0; i < temp.length(); i++) {
-		//If our string is does not contain either a digit or letter, we must be
-		// at the end of our string AND the last char is either a letter or $
-		if(!isalpha(temp[i]) && !isdigit(temp[i])) {
-			if(temp[temp.length()-1] != '$' ||  !isalpha(temp[temp.length()-1])) {
+		// condition checks the strings first character, meets condition if first character is not a digit
+		if(!isalpha(temp[i])) {
+			if(!isalpha(temp[temp.length()-1]) || temp[temp.length()-1] != '$') {
 				cout << temp << " is not a valid identifier." << endl;
 				return false;
 			}

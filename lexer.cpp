@@ -29,19 +29,14 @@ void print_list(const vector<string>& variable, const vector<string>& state);
 
 /*-----------------------------------Start of main------------------------------------*/
 int main(int argc, char** argv) {
-  char filename[256];
-  
   ifstream fs("test1.txt");	//Open file
-
   //Check that the file is open
   if(!fs.is_open()) {
     cout << "Could not find file. Aborting." << std::endl;
     return -1;
   }
-  
   vector<string> variable;
   vector<string> state;
-  
   // read until white space, save string into temp
   while(!fs.eof()) {
 	  string temp;
@@ -49,9 +44,7 @@ int main(int argc, char** argv) {
 	  isValid(temp, variable, state);
   }
   fs.close();
-  
   print_list(variable, state);
-  
   return 0;
 }
 /*-----------------------------------End of main------------------------------------*/

@@ -1,25 +1,23 @@
-//CPSC323 Project 1 - Lexer
-#include <iomanip>	//Formatting: setw()
-#include <iostream>	//cout, cin
-#include <string>	//string::length(), string::string
-#include <fstream>	//open files and write to them
-#include <vector>	//vector class
+//Project 1 - Lexer
+
+#include <iostream> //std::cout
+#include <string>	//string::string, string::length(), 
+#include <fstream>	//ofstrea::ofstream, ifstream::ifstream, open, close
+#include <vector>	//for vector, vector::size()
 #include <cctype>	//isdigit(), isalpha()
-
-//identifier - starts with letter, can end with 
-//real - integer followed by a "." and integer
-//integer - sequence of decimal digits
-
-//const std::string keywords[] = {"if", "else", "while", "for"};
-//const std::string separators[] = {'{', '}', '[', ']', '(', ')'}
+#include <iomanip>	//std::setw() 
 
 using namespace std;
 
+//Function headers
 bool isIdentifier(string temp, vector<string>& variable, vector<string>& state);
 bool isReal(string temp, vector<string>& variable, vector<string>& state);
 bool isInteger(string temp, vector<string>& variable, vector<string>& state);
 bool isValid(string original, vector<string>& variable, vector<string>& state);
 void print_list(const vector<string>& variable, const vector<string>& state);
+
+//Keywords
+const string keywords[] = { "while", "if", "else" };
 
 /*-----------------------------------Start of main------------------------------------*/
 int main(int argc, char** argv) {
@@ -42,12 +40,24 @@ int main(int argc, char** argv) {
   return 0;
 }
 /*-----------------------------------End of main------------------------------------*/
+
+/*------------------------------print function--------------------------------------*/
 void print_list(const vector<string>& variable, const vector<string>& state) {
-	cout << setw(10);
-	cout << " === Token ===\t\t\t=== State ===\n";
+	
+	const int space = 20;
+	filebuf fb;
+	fb.open("Tokens.txt", ios::out);
+	ostream os(&fb);
+	
+	cout << " === Token ===" << setw(space) << "=== State ===\n";
+	os << " === Token ===" << setw(space) << "=== State ===\n";
+	 
 	for(int i = 0; i < variable.size(); i++) {
-	  cout << variable[i] << "\t\t\t" << state[i] << endl;
+		int indent = space - state[i].length();
+		cout << right << state[i] << left << setw(indent) << " " << variable[i] << endl;
+		os << right << state[i] << left << setw(indent) << " " << variable[i] << endl;
 	}
+	fb.close();
 }
 
 bool isIdentifier(string temp, vector<string>& variable, vector<string>& state) {
@@ -85,12 +95,12 @@ bool isReal(string temp, vector<string>& variable, vector<string>& state) {
 				dotcount++;
 			}
 			else {
-				cout << "Found something other than a dot or digit\n";
+				cout << temp << " has something other than a dot or digit\n";
 				return false;
 			}
 		}
 		if(dotcount == 2) {
-			cout << "Too many dots for this to be real..." << endl;
+			cout << temp << " has too many dots for this to be real..." << endl;
 			return false;
 		}
 	}
@@ -111,7 +121,6 @@ bool isInteger(string temp, vector<string>& variable, vector<string>& state) {
 				return true;
 			}
 			else {
-				cout << temp << " was tested as a real and did not pass. " << endl;
 				return false;
 			}
 		}
@@ -122,9 +131,22 @@ bool isInteger(string temp, vector<string>& variable, vector<string>& state) {
 	return true;
 }
 
+bool isKeyword(string original) {
+	for(int i = 0; i < 3; i++) {
+		if(original == keywords[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool isValid(string original, vector<string>& variable, vector<string>& state) {
 	if(isalpha(original[0])) {
 		if(isIdentifier(original, variable, state)) {
+			//Check if the word is a keyword
+			if(isKeyword(original)) {
+				state.back() = "Keyword";
+			}
 			return true;
 		}
 	}

@@ -1,6 +1,6 @@
 //Project 1 - Lexer
 
-#include <iostream> //std::cout
+#include <iostream> 	//std::cout
 #include <string>	//string::string, string::length(), 
 #include <fstream>	//ofstrea::ofstream, ifstream::ifstream, open, close
 #include <vector>	//for vector, vector::size()
@@ -9,15 +9,26 @@
 
 using namespace std;
 
-//Function headers
-bool isIdentifier(string temp, vector<string>& variable, vector<string>& state);
-bool isReal(string temp, vector<string>& variable, vector<string>& state);
-bool isInteger(string temp, vector<string>& variable, vector<string>& state);
-bool isValid(string original, vector<string>& variable, vector<string>& state);
-void print_list(const vector<string>& variable, const vector<string>& state);
+/*--------------------------Token struct----------------------------------------------*/
+struct Token {
+	string variable;
+	string state;
+};
 
-//Keywords
+/*-------------------------Function headers-------------------------------------------*/
+void putVector(string original, string state, vector<Token>& tokens);		//A helper function to add element to vector
+bool isIdentifier(string original, vector<Token>& tokens);			//Verifies if given word is valid identifier
+bool isReal(string original, vector<Token>& tokens);				//Verifies if given word is valid real
+bool isInteger(string original, vector<Token>& tokens);				//Verifies if given word is valid integer
+bool isValid(string original, vector<Token>& tokens);
+void print_list(const vector<Token>& tokens);					//Prints our list out to console and text file
+
+
+/* ----------Const keywords, operators, and separators--------------------------------*/
 const string keywords[] = { "while", "if", "else" };
+const string operators[] = { "<", ">", "<=", ">=", "=", "+", "-", "+=", "-=", "*", "/", "*=", "/=" };
+const string separators[] = { "(", ")", "{", "}", "[", "]", "," };
+
 
 /*-----------------------------------Start of main------------------------------------*/
 int main(int argc, char** argv) {
@@ -27,97 +38,96 @@ int main(int argc, char** argv) {
     cout << "Could not find file. Aborting." << std::endl;
     return -1;
   }
-  vector<string> variable;
-  vector<string> state;
+  
+  vector<Token> tokens;
   // read until white space, save string into temp
   while(!fs.eof()) {
 	  string temp;
 	  fs >> temp;
-	  isValid(temp, variable, state);
+	  isValid(temp, tokens);
   }
   fs.close();
-  print_list(variable, state);
+  print_list(tokens);
   return 0;
 }
 /*-----------------------------------End of main------------------------------------*/
 
 /*------------------------------print function--------------------------------------*/
-void print_list(const vector<string>& variable, const vector<string>& state) {
+void print_list(const vector<Token>& tokens) {
 	
 	const int space = 20;
 	filebuf fb;
 	fb.open("Tokens.txt", ios::out);
 	ostream os(&fb);
 	
-	cout << " === Token ===" << setw(space) << "=== State ===\n";
-	os << " === Token ===" << setw(space) << "=== State ===\n";
+	cout << " === State ===" << setw(space) << "=== Token ===\n";
+	os << " === State ===" << setw(space) << "=== Token ===\n";
 	 
-	for(int i = 0; i < variable.size(); i++) {
-		int indent = space - state[i].length();
-		cout << right << state[i] << left << setw(indent) << " " << variable[i] << endl;
-		os << right << state[i] << left << setw(indent) << " " << variable[i] << endl;
+	for(int i = 0; i < tokens.size(); i++) {
+		int indent = space - tokens[i].state.length();
+		cout << right << tokens[i].state << left << setw(indent) << " " << tokens[i].variable << endl;
+		os << right << tokens[i].state << left << setw(indent) << " " << tokens[i].variable << endl;
 	}
 	fb.close();
 }
 
-bool isIdentifier(string temp, vector<string>& variable, vector<string>& state) {
-	for(int i = 0; i < temp.length(); i++) {
+bool isIdentifier(string original, vector<Token>& tokens) {
+	for(int i = 0; i < original.length(); i++) {
 		// condition checks the strings first character, meets condition if first character is not a digit
 		
 		//Checks to make sure that the word does not have a symbol in the middle
-		if(i != temp.length()-1) {
-			if(!isalpha(temp[i]) && !isdigit(temp[i])) { 
-				cout << temp << " contains a non-alphabet or non-digit.\n";
+		if(i != original.length()-1) {
+			if(!isalpha(original[i]) && !isdigit(original[i])) { 
+				cout << original << " contains a non-alphabet or non-digit.\n";
 				return false;
 			} 
 		}
 		
 		//Checks the last character of the word to make sure that it ends in either an letter or $
 		else {
-			if(!isalpha(temp[i]) && temp[i] != '$') {
-				cout << temp << " does not end with either an alphabet or a '$'. \n";
+			if(!isalpha(original[i]) && original[i] != '$') {
+				cout << original << " does not end with either an alphabet or a '$'. \n";
 				return false;
 			}
 		}
 	}
-	variable.push_back(temp);
-	state.push_back("Identifier");
+	
+	putVector(original, "Identifier", tokens);
 	return true;
 }
 
-bool isReal(string temp, vector<string>& variable, vector<string>& state) {
+bool isReal(string original, vector<Token>& tokens) {
 	//There must be exactly one dot. Integers must both precede and follow the dot.
 	int dotcount = 0;
 	
-	for(int i = 0; i < temp.length(); i++) {
-		if(!isdigit(temp[i])) {
-			if(temp[i] == '.') {
+	for(int i = 0; i < original.length(); i++) {
+		if(!isdigit(original[i])) {
+			if(original[i] == '.') {
 				dotcount++;
 			}
 			else {
-				cout << temp << " has something other than a dot or digit\n";
+				cout << original << " has something other than a dot or digit\n";
 				return false;
 			}
 		}
 		if(dotcount == 2) {
-			cout << temp << " has too many dots for this to be real..." << endl;
+			cout << original << " has too many dots for this to be real..." << endl;
 			return false;
 		}
 	}
 	
-	variable.push_back(temp);
-	state.push_back("Real");
+	putVector(original, "Real", tokens);
 	return true;
 }
 
-bool isInteger(string temp, vector<string>& variable, vector<string>& state) {
-	for(int i = 0; i < temp.length(); i++) {
-		if(!isdigit(temp[i]) && temp[i] != '.') {
+bool isInteger(string original, vector<Token>& tokens) {
+	for(int i = 0; i < original.length(); i++) {
+		if(!isdigit(original[i]) && original[i] != '.') {
 			return false;
 		}
-		else if(temp[i] == '.') {
+		else if(original[i] == '.') {
 			cout << "Integer found a dot. Testing if it's a real.\n";
-			if(isReal(temp, variable, state)) {
+			if(isReal(original, tokens)) {
 				return true;
 			}
 			else {
@@ -126,8 +136,7 @@ bool isInteger(string temp, vector<string>& variable, vector<string>& state) {
 		}
 	}
 	
-	variable.push_back(temp);
-	state.push_back("Integer");
+	putVector(original, "Integer", tokens);
 	return true;
 }
 
@@ -140,20 +149,28 @@ bool isKeyword(string original) {
 	return false;
 }
 
-bool isValid(string original, vector<string>& variable, vector<string>& state) {
+bool isValid(string original, vector<Token>& tokens) {
 	if(isalpha(original[0])) {
-		if(isIdentifier(original, variable, state)) {
+		if(isIdentifier(original, tokens)) {
 			//Check if the word is a keyword
 			if(isKeyword(original)) {
-				state.back() = "Keyword";
+				tokens.back().state = "Keyword";
 			}
 			return true;
 		}
 	}
 	else if(isdigit(original[0])) {
-		if(isInteger(original, variable, state)) {
+		if(isInteger(original, tokens)) {
 			return true;
 		}
 	}
 	return false;
+}
+
+/*-------------Helper function to pushback to our token vector--------------------*/
+void putVector(string var, string state, vector<Token>& tokens) {
+	Token token;
+	token.variable = var;
+	token.state = state;
+	tokens.push_back(token);
 }

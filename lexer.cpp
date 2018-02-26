@@ -1,11 +1,10 @@
 //CPSC323 Project 1 - Lexer
-#include <stdio.h>
-#include <iomanip>
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
-#include <cctype>
+#include <iomanip>	//Formatting: setw()
+#include <iostream>	//cout, cin
+#include <string>	//string::length(), string::string
+#include <fstream>	//open files and write to them
+#include <vector>	//vector class
+#include <cctype>	//isdigit(), isalpha()
 
 //identifier - starts with letter, can end with 
 //real - integer followed by a "." and integer

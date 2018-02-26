@@ -1,4 +1,3 @@
-//Johnson Lien
 //CPSC323 Project 1 - Lexer
 #include <stdio.h>
 #include <iomanip>
@@ -55,9 +54,19 @@ void print_list(const vector<string>& variable, const vector<string>& state) {
 bool isIdentifier(string temp, vector<string>& variable, vector<string>& state) {
 	for(int i = 0; i < temp.length(); i++) {
 		// condition checks the strings first character, meets condition if first character is not a digit
-		if(!isalpha(temp[i])) {
-			if(!isalpha(temp[temp.length()-1]) || temp[temp.length()-1] != '$') {
-				cout << temp << " is not a valid identifier." << endl;
+		
+		//Checks to make sure that the word does not have a symbol in the middle
+		if(i != temp.length()-1) {
+			if(!isalpha(temp[i]) && !isdigit(temp[i])) { 
+				cout << temp << " contains a non-alphabet or non-digit.\n";
+				return false;
+			} 
+		}
+		
+		//Checks the last character of the word to make sure that it ends in either an letter or $
+		else {
+			if(!isalpha(temp[i]) && temp[i] != '$') {
+				cout << temp << " does not end with either an alphabet or a '$'. \n";
 				return false;
 			}
 		}

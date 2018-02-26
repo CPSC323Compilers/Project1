@@ -20,12 +20,14 @@ void putVector(string original, string state, vector<Token>& tokens);		//A helpe
 bool isIdentifier(string original, vector<Token>& tokens);			//Verifies if given word is valid identifier
 bool isReal(string original, vector<Token>& tokens);				//Verifies if given word is valid real
 bool isInteger(string original, vector<Token>& tokens);				//Verifies if given word is valid integer
+bool isSeparator(string original);
+bool isOperator(string original);
 bool isValid(string original, vector<Token>& tokens);
 void print_list(const vector<Token>& tokens);					//Prints our list out to console and text file
 
 
 /* ----------Const keywords, operators, and separators--------------------------------*/
-const string keywords[] = { "while", "if", "else" };
+const string keywords[] = { "while", "if", "else", "include", "for", "do" };
 const string operators[] = { "<", ">", "<=", ">=", "=", "+", "-", "+=", "-=", "*", "/", "*=", "/=" };
 const string separators[] = { "(", ")", "{", "}", "[", "]", "," };
 
@@ -141,14 +143,29 @@ bool isInteger(string original, vector<Token>& tokens) {
 }
 
 bool isKeyword(string original) {
-	for(int i = 0; i < 3; i++) {
+	for(int i = 0; i < 6; i++) {
 		if(original == keywords[i]) {
 			return true;
 		}
 	}
 	return false;
 }
-
+bool isSeparator(string original) {
+	for(int i = 0; i < 7; i++) {
+		if(original == separators[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+bool isOperator(string original) {
+	for(int i = 0; i < 13; i++) {
+		if(original == operators[i]) {
+			return true;
+		}
+	}
+	return false;
+}
 bool isValid(string original, vector<Token>& tokens) {
 	if(isalpha(original[0])) {
 		if(isIdentifier(original, tokens)) {

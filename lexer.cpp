@@ -17,13 +17,13 @@ struct Token {
 
 /*-------------------------Function headers-------------------------------------------*/
 void putVector(string original, string state, vector<Token>& tokens);		//A helper function to add element to vector
-bool isIdentifier(string original, vector<Token>& tokens);			//Verifies if given word is valid identifier
-bool isReal(string original, vector<Token>& tokens);				//Verifies if given word is valid real
-bool isInteger(string original, vector<Token>& tokens);				//Verifies if given word is valid integer
-bool isSeparator(string original);
-bool isOperator(string original);
+bool isIdentifier(string original, vector<Token>& tokens);					//Verifies if given word is valid identifier
+bool isReal(string original, vector<Token>& tokens);						//Verifies if given word is valid real
+bool isInteger(string original, vector<Token>& tokens);						//Verifies if given word is valid integer
+bool isSeparator(string original);											//Verifies if given word is valid separator
+bool isOperator(string original);											//Verifies if given word is valid operator
 bool isValid(string original, vector<Token>& tokens);
-void print_list(const vector<Token>& tokens);					//Prints our list out to console and text file
+void print_list(const vector<Token>& tokens);								//Prints our list out to console and text file
 
 
 /* ----------Const keywords, operators, and separators--------------------------------*/
@@ -160,6 +160,7 @@ bool isSeparator(string original) {
 }
 bool isOperator(string original) {
 	for(int i = 0; i < 13; i++) {
+		
 		if(original == operators[i]) {
 			return true;
 		}

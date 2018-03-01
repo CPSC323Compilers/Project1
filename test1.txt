@@ -3,4 +3,4 @@ Testing integer 34 66 32
 Testing identifier hello h23$ h9.3
 Testing keyword while if else include for do
 Testing operator <
-Testing separator ()
+Testing separator ( ) { } , 

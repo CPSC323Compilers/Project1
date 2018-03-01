@@ -7,6 +7,37 @@
 #include <cctype>	//isdigit(), isalpha()
 #include <iomanip>	//std::setw() 
 
+// the comment stuff i removed for now
+
+/*	  
+	  /
+	  //Switch the commentState to true when a '!' is found
+	  if(temp == "!" && commentState == true) {
+		  comments += temp + ' ';
+		  putVector(comments, "Comment", tokens);
+		  comments = "";	//Clean our buffer
+		  commentState = false;
+	  }
+	  
+	  //Switch our commentState to off when the next '!' is found
+	  else if(temp == "!" && commentState == false) {
+		  commentState = true;
+	  }
+	  
+	  if(commentState) {
+		  //Concatenate our comments together
+		  comments += temp + ' ';
+	  }
+	  
+	  //After the comments are done, check for everything else
+	  else {
+		 isValid(temp, tokens);
+		 
+		 //We need to parse the string in case of separators and operators
+		 
+	  }
+*/
+
 using namespace std;
 
 /*--------------------------Token struct----------------------------------------------*/
@@ -46,35 +77,7 @@ int main(int argc, char** argv) {
   while(!fs.eof()) {
 	  string temp;
 	  fs >> temp;
-	  
-	  /*----------Deals with comments--------*/
-	  /*----------Only works when the '!' is separated by spaces----------*/
-	  //Switch the commentState to true when a '!' is found
-	  if(temp == "!" && commentState == true) {
-		  comments += temp + ' ';
-		  putVector(comments, "Comment", tokens);
-		  comments = "";	//Clean our buffer
-		  commentState = false;
-	  }
-	  
-	  //Switch our commentState to off when the next '!' is found
-	  else if(temp == "!" && commentState == false) {
-		  commentState = true;
-	  }
-	  
-	  if(commentState) {
-		  //Concatenate our comments together
-		  comments += temp + ' ';
-	  }
-	  
-	  //After the comments are done, check for everything else
-	  else {
-		 isValid(temp, tokens);
-		 
-		 //We need to parse the string in case of separators and operators
-		 
-	  }
-	  
+	  isValid(temp, tokens);
   }
   fs.close();
   print_list(tokens);
@@ -100,11 +103,10 @@ void print_list(const vector<Token>& tokens) {
 	}
 	fb.close();
 }
-
+/*------------------------------END print function--------------------------------------*/
 bool isIdentifier(string original, vector<Token>& tokens) {
 	for(int i = 0; i < original.length(); i++) {
 		// condition checks the strings first character, meets condition if first character is not a digit
-		
 		//Checks to make sure that the word does not have a symbol in the middle
 		if(i != original.length()-1) {
 			if(!isalpha(original[i]) && !isdigit(original[i])) { 
@@ -170,7 +172,7 @@ bool isInteger(string original, vector<Token>& tokens) {
 	return true;
 }
 
-bool isKeyword(string original) {
+bool isKeyword(string original, vector<Token>& tokens) {
 	for(int i = 0; i < 6; i++) {
 		if(original == keywords[i]) {
 			return true;
@@ -178,14 +180,20 @@ bool isKeyword(string original) {
 	}
 	return false;
 }
-bool isSeparator(string original) {
-	for(int i = 0; i < 7; i++) {
-		if(original == separators[i]) {
-			return true;
+bool isSeparator(string original, vector<Token>& tokens) {
+		//Checks the last character of the word to make sure that it does not have alpha or $ in string.
+		if (!isalpha(original[0]) && original[0] != '$'){
+			
+				for(int i = 0; i < 7; i++) {
+					if(original == separators[i]) {
+						putVector(original, "Separator", tokens);
+					}	
+				}
+			
 		}
-	}
-	return false;
+	return true;
 }
+/*
 bool isOperator(string original) {
 	for(int i = 0; i < 13; i++) {
 		
@@ -195,11 +203,12 @@ bool isOperator(string original) {
 	}
 	return false;
 }
+*/
 bool isValid(string original, vector<Token>& tokens) {
 	if(isalpha(original[0])) {
 		if(isIdentifier(original, tokens)) {
 			//Check if the word is a keyword
-			if(isKeyword(original)) {
+			if(isKeyword(original,tokens)) {
 				tokens.back().state = "Keyword";
 			}
 			return true;
@@ -209,6 +218,10 @@ bool isValid(string original, vector<Token>& tokens) {
 		if(isInteger(original, tokens)) {
 			return true;
 		}
+	}
+	else if(isSeparator(original, tokens)){
+		cout << "inside is separator " << endl;
+		return true;
 	}
 	return false;
 }

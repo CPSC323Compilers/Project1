@@ -181,16 +181,14 @@ bool isKeyword(string original, vector<Token>& tokens) {
 	return false;
 }
 bool isSeparator(string original, vector<Token>& tokens) {
-		//Checks the last character of the word to make sure that it does not have alpha or $ in string.
-		if (!isalpha(original[0]) && original[0] != '$'){
-			
-				for(int i = 0; i < 7; i++) {
-					if(original == separators[i]) {
-						putVector(original, "Separator", tokens);
-					}	
-				}
-			
+	//Checks the last character of the word to make sure that it does not have alpha or $ in string.
+	if (!isalpha(original[0]) && original[0] != '$'){
+		for(int i = 0; i < 7; i++) {
+			if(original == separators[i]) {
+				putVector(original, "Separator", tokens);
+			}	
 		}
+	}
 	return true;
 }
 /*

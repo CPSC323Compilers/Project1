@@ -7,37 +7,6 @@
 #include <cctype>	//isdigit(), isalpha()
 #include <iomanip>	//std::setw() 
 
-// the comment stuff i removed for now
-
-/*	  
-	  /
-	  //Switch the commentState to true when a '!' is found
-	  if(temp == "!" && commentState == true) {
-		  comments += temp + ' ';
-		  putVector(comments, "Comment", tokens);
-		  comments = "";	//Clean our buffer
-		  commentState = false;
-	  }
-	  
-	  //Switch our commentState to off when the next '!' is found
-	  else if(temp == "!" && commentState == false) {
-		  commentState = true;
-	  }
-	  
-	  if(commentState) {
-		  //Concatenate our comments together
-		  comments += temp + ' ';
-	  }
-	  
-	  //After the comments are done, check for everything else
-	  else {
-		 isValid(temp, tokens);
-		 
-		 //We need to parse the string in case of separators and operators
-		 
-	  }
-*/
-
 using namespace std;
 
 /*--------------------------Token struct----------------------------------------------*/
@@ -73,11 +42,33 @@ int main(int argc, char** argv) {
   }
   
   vector<Token> tokens;
+  bool commentState = false;
+  string comments = "";
+	
   // read until white space, save string into temp
   while(!fs.eof()) {
 	  string temp;
 	  fs >> temp;
-	  isValid(temp, tokens);
+	  
+	  /*----Handles comments----*/
+	  if(temp == "!" && commentState == true) {
+	  	comments += temp + ' ';
+		putVector(comments, "Comment", tokens);
+		comments = "";	//Clear our buffer
+		commentState = false;
+	  }
+	  
+	  //Switch our commentState to off when the next '!' is found
+	  else if(temp == "!" && commentState == false) {
+	  	commentState = true;
+	  }
+	  
+	  if(commentState) {
+		  comments += temp + ' ';
+	  }
+	  else {
+		  isValid(temp, tokens);
+	  }
   }
   fs.close();
   print_list(tokens);

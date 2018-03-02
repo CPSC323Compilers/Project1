@@ -51,8 +51,8 @@ void putVector(string original, string state, vector<Token>& tokens);		//A helpe
 bool isIdentifier(string original, vector<Token>& tokens);					//Verifies if given word is valid identifier
 bool isReal(string original, vector<Token>& tokens);						//Verifies if given word is valid real
 bool isInteger(string original, vector<Token>& tokens);						//Verifies if given word is valid integer
-bool isSeparator(string original);											//Verifies if given word is valid separator
-bool isOperator(string original);											//Verifies if given word is valid operator
+bool isSeparator(string original, vector<Token>& tokens);											//Verifies if given word is valid separator
+bool isOperator(string original, vector<Token>& tokens);											//Verifies if given word is valid operator
 bool isValid(string original, vector<Token>& tokens);
 void print_list(const vector<Token>& tokens);								//Prints our list out to console and text file
 
@@ -105,9 +105,9 @@ void print_list(const vector<Token>& tokens) {
 }
 /*------------------------------END print function--------------------------------------*/
 bool isIdentifier(string original, vector<Token>& tokens) {
-	for(int i = 0; i < original.length(); i++) {
+ 	for(int i = 0; i < original.length(); i++) {
 		// condition checks the strings first character, meets condition if first character is not a digit
-		//Checks to make sure that the word does not have a symbol in the middle
+		// Checks to make sure that the word does not have a symbol in the middle
 		if(i != original.length()-1) {
 			if(!isalpha(original[i]) && !isdigit(original[i])) { 
 				cout << original << " contains a non-alphabet or non-digit.\n";
@@ -123,7 +123,6 @@ bool isIdentifier(string original, vector<Token>& tokens) {
 			}
 		}
 	}
-	
 	putVector(original, "Identifier", tokens);
 	return true;
 }
@@ -186,22 +185,27 @@ bool isSeparator(string original, vector<Token>& tokens) {
 		for(int i = 0; i < 7; i++) {
 			if(original == separators[i]) {
 				putVector(original, "Separator", tokens);
+			}
+			else if(original == operators[i]){
+				putVector(original, "Operators", tokens);
+			}
+		}
+	}
+	return true;
+}
+
+bool isOperator(string original, vector<Token>& tokens) {
+	//Checks the last character of the word to make sure that it does not have alpha or $ in string.
+	if (!isalpha(original[0]) && original[0] != '$'){
+		for(int i = 0; i < 13; i++) {
+			if(original == operators[i]) {
+				putVector(original, "Operator", tokens);
+				return true;
 			}	
 		}
 	}
 	return true;
 }
-/*
-bool isOperator(string original) {
-	for(int i = 0; i < 13; i++) {
-		
-		if(original == operators[i]) {
-			return true;
-		}
-	}
-	return false;
-}
-*/
 bool isValid(string original, vector<Token>& tokens) {
 	if(isalpha(original[0])) {
 		if(isIdentifier(original, tokens)) {
@@ -218,7 +222,6 @@ bool isValid(string original, vector<Token>& tokens) {
 		}
 	}
 	else if(isSeparator(original, tokens)){
-		cout << "inside is separator " << endl;
 		return true;
 	}
 	return false;

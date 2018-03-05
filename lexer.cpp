@@ -20,8 +20,8 @@ void putVector(string original, string state, vector<Token>& tokens);		//A helpe
 bool isIdentifier(string original, vector<Token>& tokens);					//Verifies if given word is valid identifier
 bool isReal(string original, vector<Token>& tokens);						//Verifies if given word is valid real
 bool isInteger(string original, vector<Token>& tokens);						//Verifies if given word is valid integer
-bool isSeparator(string original, vector<Token>& tokens);											//Verifies if given word is valid separator
-bool isOperator(string original, vector<Token>& tokens);											//Verifies if given word is valid operator
+bool isSeparator(string original, vector<Token>& tokens);					//Verifies if given word is valid separator
+bool isOperator(string original, vector<Token>& tokens);					//Verifies if given word is valid operator
 bool isValid(string original, vector<Token>& tokens);
 void print_list(const vector<Token>& tokens);								//Prints our list out to console and text file
 
@@ -30,6 +30,7 @@ void print_list(const vector<Token>& tokens);								//Prints our list out to co
 const string keywords[] = { "while", "if", "else", "include", "for", "do" };
 const string operators[] = { "<", ">", "<=", ">=", "=", "+", "-", "+=", "-=", "*", "/", "*=", "/=" };
 const string separators[] = { "(", ")", "{", "}", "[", "]", "," };
+const string delim = ";";
 
 
 /*-----------------------------------Start of main------------------------------------*/
@@ -96,6 +97,8 @@ void print_list(const vector<Token>& tokens) {
 }
 /*------------------------------END print function--------------------------------------*/
 bool isIdentifier(string original, vector<Token>& tokens) {
+	string tempString;
+	string newString;
  	for(int i = 0; i < original.length(); i++) {
 		// condition checks the strings first character, meets condition if first character is not a digit
 		// Checks to make sure that the word does not have a symbol in the middle
@@ -107,12 +110,39 @@ bool isIdentifier(string original, vector<Token>& tokens) {
 		}
 		
 		//Checks the last character of the word to make sure that it ends in either an letter or $
-		else {
-			if(!isalpha(original[i]) && original[i] != '$') {
-				cout << original << " does not end with either an alphabet or a '$'. \n";
-				return false;
+		else if(i == original.length()-1){
+			cout << original[i] << endl;
+			if(original[i] == '$'){
+				cout << "sddf" << endl;
+				cout << original;
+				if(original[i] == ';'){
+					tempString = ";";
+					newString = original.substr(0,i);
+					putVector(newString, "Identifer", tokens);
+					putVector(tempString, "Separator", tokens);
+					tempString.clear();
+					return true;
+				}
 			}
+			if(!isalpha(original[i]) && original[i] != '$'){
+				if(original[i] == ','){
+					tempString = ",";
+					newString = original.substr(0,i);
+					putVector(newString, "Identifer", tokens);
+					putVector(tempString, "Separator", tokens);
+					tempString.clear();
+					return true;
+				}
+				else{
+					cout << original << " does not end with either an alphabet or a '$'. \n";
+					return false;
+				}
+			}
+			
+					
 		}
+		
+				
 	}
 	putVector(original, "Identifier", tokens);
 	return true;

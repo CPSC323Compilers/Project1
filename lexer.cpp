@@ -6,17 +6,12 @@
 #include <vector>	//for vector, vector::size()
 #include <cctype>	//isdigit(), isalpha()
 #include <iomanip>	//std::setw() 
+#include "lexer.h"
 
 using namespace std;
 
-/*--------------------------Token struct----------------------------------------------*/
-struct Token {
-	string variable;
-	string state;
-};
-
 /*--------------------------------Global Variable-------------------------------------*/
-vector<Token> tokens;
+vector<Lexer> tokens;
 
 /*-------------------------Function headers-------------------------------------------*/
 void putVector(string original, string state);		//A helper function to add element to vector
@@ -27,6 +22,7 @@ bool isSeparator(string original);											//Verifies if given word is valid s
 bool isOperator(string original);											//Verifies if given word is valid operator
 bool isValid(string original);
 void print_list();								//Prints our list out to console and text file
+void isGenerated();
 
 
 /* ----------Const keywords, operators, and separators--------------------------------*/
@@ -36,15 +32,14 @@ const string separators[] = { "(", ")", "{", "}", "[", "]", "," };
 
 
 /*-----------------------------------Start of main------------------------------------*/
-int main(int argc, char** argv) {
+void Lexer::isGenerated() {
   ifstream fs("test1.txt");	//Open file
   //Check that the file is open
   if(!fs.is_open()) {
     cout << "Could not find file. Aborting." << std::endl;
-    return -1;
   }
   
-  vector<Token> tokens;
+  //vector<Token> tokens;
   bool commentState = false;
   string comments = "";
 	
@@ -75,12 +70,11 @@ int main(int argc, char** argv) {
   }
   fs.close();
   print_list();
-  return 0;
 }
 /*-----------------------------------End of main------------------------------------*/
 
 /*------------------------------print function--------------------------------------*/
-void print_list() {
+void Lexer::print_list() {
 	
 	const int space = 20;
 	filebuf fb;
@@ -223,7 +217,7 @@ bool isValid(string original) {
 
 /*-------------Helper function to pushback to our token vector--------------------*/
 void putVector(string var, string state) {
-	Token token;
+	Lexer token;
 	token.variable = var;
 	token.state = state;
 	tokens.push_back(token);
